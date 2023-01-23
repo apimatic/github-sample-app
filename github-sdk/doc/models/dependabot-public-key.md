@@ -1,0 +1,25 @@
+
+# Dependabot Public Key
+
+The public key used for setting Dependabot Secrets.
+
+## Structure
+
+`DependabotPublicKey`
+
+## Fields
+
+| Name | Type | Tags | Description | Getter | Setter |
+|  --- | --- | --- | --- | --- | --- |
+| `KeyId` | `String` | Required | The identifier for the key. | String getKeyId() | setKeyId(String keyId) |
+| `Key` | `String` | Required | The Base64 encoded public key. | String getKey() | setKey(String key) |
+
+## Example (as JSON)
+
+```json
+{
+  "key_id": "1234567",
+  "key": "hBT5WZEj8ZoOv6TYJsfWq7MxTEQopZO5/IT3ZCVQPzs="
+}
+```
+
