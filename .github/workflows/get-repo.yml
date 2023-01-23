@@ -1,0 +1,46 @@
+name: Get Repository
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository-name:
+        description: 'Name of the repository (to be searched). We have selected an existing repository in account `hamzashoukat94` by default'
+        default: 'maven-publish'
+        required: true
+        type: string
+      gh-username:
+        description: 'Username of the github account. You can also choose any account name here by making sure that the respective access token is also provided'
+        default: 'hamzashoukat94'
+        required: true
+        type: string
+      gh-access-token:
+        description: 'Optional: AccessToken of the github account. If not provided then the access token for account `hamzashoukat94` will be used by default'
+        type: string
+
+jobs:
+  application:
+    name: Get Repository
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REPO: ${{ github.event.inputs.repository-name }}
+      GITHUB_USERNAME: ${{ github.event.inputs.gh-username }}
+      GITHUB_ACCESS_TOKEN: ${{ github.event.inputs.gh-access-token }}
+      GITHUB_ACCESS_TOKEN_DEFAULT: ${{ secrets.ACCESS_TOKEN_DEFAULT }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+      
+      - name: Install APIMatic SDK
+        run: mvn -f "github-sdk/pom.xml" --no-transfer-progress clean install
+
+      - name: Build GitHub Application
+        run: mvn -f "github-sample-app/pom.xml" --no-transfer-progress clean install
+        
+      - name: Run GitHub Application
+        run: cd "github-sample-app" &&  mvn exec:java --no-transfer-progress -Dexec.mainClass="github.sample.app.GetRepository"
